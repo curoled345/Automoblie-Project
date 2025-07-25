@@ -1,4 +1,4 @@
-## 기본 라이브러리 설치
+# 기본 라이브러리 설치
     import torch
     import torch.nn as nn
     import torch.optim as optim
