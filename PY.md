@@ -1,3 +1,4 @@
+## 기본 라이브러리 설치
     import torch
     import torch.nn as nn
     import torch.optim as optim
@@ -7,7 +8,7 @@
     import zipfile
     import os
 
-# ✅ 설정
+# 설정
     zip_path = '/content/traffic_detection_2.v1i.tensorflow.zip'  # 압축 파일 경로
     extract_dir = '/content/traffic_data'  # 압축 해제 폴더
     batch_size = 16
@@ -15,29 +16,29 @@
     lr = 0.001
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-# ✅ 압축 해제
+# 압축 해제
     if not os.path.exists(extract_dir):
         with zipfile.ZipFile(zip_path, 'r') as zip_ref:
             zip_ref.extractall(extract_dir)
 
-# ✅ 전처리
+# 전처리
     transform = transforms.Compose([
         transforms.Resize((224, 224)),
         transforms.ToTensor()
     ])
 
-# ✅ 데이터셋 (ImageFolder 형식)
+# 데이터셋 (ImageFolder 형식)
     train_dataset = datasets.ImageFolder(f"{extract_dir}/train_images", transform=transform)
     val_dataset = datasets.ImageFolder(f"{extract_dir}/val_images", transform=transform)
 
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
     val_loader = DataLoader(val_dataset, batch_size=batch_size)
 
-# ✅ 클래스 수 확인
+# 클래스 수 확인
     num_classes = len(train_dataset.classes)
     print("클래스 목록:", train_dataset.classes)
 
-# ✅ 모델 정의
+# 모델 정의
     class CustomCNN(nn.Module):
         def __init__(self, num_classes):
             super(CustomCNN, self).__init__()
@@ -62,13 +63,13 @@
             x = self.classifier(x)
             return x
 
-model = CustomCNN(num_classes).to(device)
+        model = CustomCNN(num_classes).to(device)
 
-# ✅ 손실 함수와 옵티마이저
+# 손실 함수와 옵티마이저
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=lr)
 
-# ✅ 검증 함수
+# 검증 함수
     def evaluate(model, val_loader):
         model.eval()
         correct, total = 0, 0
@@ -82,10 +83,10 @@ model = CustomCNN(num_classes).to(device)
             correct += (predicted == labels).sum().item()
 
     acc = 100 * correct / total
-    print(f"🔍 Validation Accuracy: {acc:.2f}%")
+    print(f" Validation Accuracy: {acc:.2f}%")
     return acc
 
-# ✅ 학습 루프
+# 학습 루프
     for epoch in range(num_epochs):
     model.train()
     total_loss = 0
@@ -105,6 +106,6 @@ model = CustomCNN(num_classes).to(device)
     print(f"[Epoch {epoch+1}/{num_epochs}] Loss: {total_loss:.4f}")
     evaluate(model, val_loader)
 
-# ✅ 모델 저장
-torch.save(model.state_dict(), "custom_cnn.pth")
-print("✅ 모델 저장 완료")
+# 모델 저장
+    torch.save(model.state_dict(), "custom_cnn.pth")
+    print(" 모델 저장 완료")
